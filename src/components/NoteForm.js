@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-// import {noteData} from '../firebase/firebaseConnect';
-// import * as firebase from 'firebase';
 import { connect } from 'react-redux';
 class NoteForm extends Component {
 
@@ -8,8 +6,18 @@ class NoteForm extends Component {
         super(props);
         this.state = {
             title: '',
-            content: ''
+            content: '',
+            id: ''
         };
+    }
+    componentWillMount = () => {
+        if (this.props.note) { // In case Edit Note, we have data for target note
+            this.setState({ // Update state of NoteForm
+                title: this.props.note.title,
+                content: this.props.note.content,
+                id: this.props.note.id
+            });
+        }
     }
 
     isChange = (event) => {
@@ -31,13 +39,20 @@ class NoteForm extends Component {
         this.props.saveNote(item);
 
         */
-
-        var note = {};
-        note.title = title;
-        note.content = content;
-        // var a = JSON.stringify(note);
-        this.props.addDataStore(note); // su dung reducer trong store;
-
+        if (this.state.id) { // update
+            var noteUpdate = {};
+            noteUpdate.title = title;
+            noteUpdate.content = content;
+            noteUpdate.id = this.state.id;
+            this.props.updateNoteEdit(noteUpdate);
+        } else { // add new note
+            var note = {};
+            note.title = title;
+            note.content = content;
+            // var a = JSON.stringify(note);
+            this.props.addDataStore(note); // su dung reducer trong store;
+        }
+        this.props.disableForm();
     }
 
     render() {
@@ -52,14 +67,10 @@ class NoteForm extends Component {
                 <h3>Edit Note Content</h3>
                 <form>
                     <div className="form-group">
-                        <label htmlFor="noteTitle">Title</label>
-                        <input onChange={(event) => this.isChange(event)} type="text" className="form-control" name="title" id="noteTitle" aria-describedby="helpIdNoteTitle" placeholder="Title" />
-                        <small id="helpIdNoteTitle" className="form-text text-muted">Enter your title</small>
+                        <input defaultValue={this.props.note.title} onChange={(event) => this.isChange(event)} type="text" className="form-control" name="title" id="noteTitle" aria-describedby="helpIdNoteTitle" placeholder="Title" />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="noteContent">Title</label>
-                        <textarea onChange={(event) => this.isChange(event)} type="text" className="form-control" name="content" id="noteContent" aria-describedby="helpIdnoteContent" placeholder="Content" defaultValue={""} />
-                        <small id="helpIdnoteContent" className="form-text text-muted">Enter your content</small>
+                        <textarea onChange={(event) => this.isChange(event)} type="text" className="form-control" name="content" id="noteContent" aria-describedby="helpIdnoteContent" placeholder="Content" defaultValue={this.props.note.content} />
                     </div>
                     <input onClick={() => this.saveFunction(this.state.title, this.state.content)} type="reset"
                         className="btn btn-primary btn-lg btn-block" value="Save" />
@@ -71,7 +82,7 @@ class NoteForm extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        prop: state.prop
+        note: state.editItem
     }
 }
 
@@ -82,9 +93,19 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 type: "ADD_NOTE",
                 note
             })
+        },
+        updateNoteEdit: (note) => {
+            dispatch({
+                type: "UPDATE_NOTE",
+                note
+            })
+        },
+        disableForm: () => {
+            dispatch({
+                type: "CHANGE_EDIT_VIEW"
+            })
         }
     }
 }
-//this.props.addDataStore()
 
 export default connect(mapStateToProps, mapDispatchToProps)(NoteForm);

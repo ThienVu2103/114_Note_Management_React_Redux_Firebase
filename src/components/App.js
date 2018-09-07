@@ -3,9 +3,15 @@ import '../App.css';
 import Header from './Header';
 import NoteList from './NoteList';
 import NoteForm from './NoteForm';
-import {noteData} from '../firebase/firebaseConnect'
-
+import { noteData } from '../firebase/firebaseConnect'
+import { connect } from 'react-redux'
 class App extends Component {
+  showForm = () => {
+    if(this.props.isEdit) {
+      return <NoteForm saveNote={(note) => this.saveNote(note)} />
+    }
+  }
+
   saveNote = (note) => {
     noteData.push(note);
   }
@@ -13,16 +19,23 @@ class App extends Component {
     // console.log(noteData)
     return (
       <div className="App">
-        <Header/>
+        <Header />
         <div className="container">
           <div className="row">
-              <NoteList/>
-              <NoteForm saveNote={(note) => this.saveNote(note)}/>
+            <NoteList />
+            {
+              this.showForm()
+            }
           </div>
         </div>
       </div>
     );
   }
 }
+const mapStateToProps = (state, ownProps) => {
+  return {
+    isEdit: state.isEdit
+  }
+}
 
-export default App;
+export default connect(mapStateToProps)(App)

@@ -1,5 +1,7 @@
-import * as firebase from 'firebase';
-
+// import * as firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/database'; // If using Firebase database
+import 'firebase/storage';  // If using Firebase storage
 // Initialize Firebase
 var config = {
     apiKey: "AIzaSyC-BjWObkDoX1Gg71NjPSPwAp4Ao7dPhp4",
