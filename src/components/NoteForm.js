@@ -10,7 +10,17 @@ class NoteForm extends Component {
             id: ''
         };
     }
+
+    changeTitle = () => {
+        if(this.props.isAdd) {
+            return <h3>Add Note</h3>
+        } else {
+            return <h3>Edit Note</h3>
+        }
+    }
+    
     componentWillMount = () => {
+        console.log(this.props.note)// from store
         if (this.props.note) { // In case Edit Note, we have data for target note
             this.setState({ // Update state of NoteForm
                 title: this.props.note.title,
@@ -45,12 +55,14 @@ class NoteForm extends Component {
             noteUpdate.content = content;
             noteUpdate.id = this.state.id;
             this.props.updateNoteEdit(noteUpdate);
+            this.props.alerOn();
         } else { // add new note
             var note = {};
             note.title = title;
             note.content = content;
             // var a = JSON.stringify(note);
             this.props.addDataStore(note); // su dung reducer trong store;
+            this.props.alerOn();
         }
         this.props.disableForm();
     }
@@ -64,7 +76,7 @@ class NoteForm extends Component {
 
         return (
             <div className="col-4">
-                <h3>Edit Note Content</h3>
+                {this.changeTitle()}
                 <form>
                     <div className="form-group">
                         <input defaultValue={this.props.note.title} onChange={(event) => this.isChange(event)} type="text" className="form-control" name="title" id="noteTitle" aria-describedby="helpIdNoteTitle" placeholder="Title" />
@@ -82,7 +94,8 @@ class NoteForm extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        note: state.editItem
+        note: state.editItem,
+        isAdd: state.isAdd
     }
 }
 
@@ -103,6 +116,16 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         disableForm: () => {
             dispatch({
                 type: "CHANGE_EDIT_VIEW"
+            })
+        },
+        alerOn: () => {
+            dispatch({
+                type: "ALERT_ON"
+            })
+        },
+        alerOff: () => {
+            dispatch({
+                type: "ALERT_OFF"
             })
         }
     }

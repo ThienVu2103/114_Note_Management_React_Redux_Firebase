@@ -3,9 +3,20 @@ import { connect } from 'react-redux';
 
 class NoteItem extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            title: '',
+            content: ''
+        }
+    }
+    
+
     editFunction = () => {
-        this.props.changeEditStatus()
-        // console.log(this.props.note)
+        if(!this.props.editStatus) {
+            this.props.changeEditStatus()
+        }
+        console.log(this.props.note)
         this.props.getEditData(this.props.note);
     }
     delNote = (id) => {
@@ -17,7 +28,7 @@ class NoteItem extends Component {
                 <div className="card-header" role="tab" >
                     <h5 className="mb-0">
                         <a data-toggle="collapse" data-parent="#noteList" href={"#note" + this.props.index} aria-expanded="true" aria-controls="noteContent1">
-                            {this.props.title}
+                            {this.props.note.title}
                         </a>
                     </h5>
                     <div className="btn-group float-right">
@@ -32,7 +43,7 @@ class NoteItem extends Component {
                 </div>
                 <div id={"note" + this.props.index} className="collapse in" role="tabpanel" >
                     <div className="card-body">
-                        {this.props.content}
+                        {this.props.note.content}
                     </div>
                 </div>
 
@@ -43,7 +54,8 @@ class NoteItem extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        editStatus: state.isEdit
+        editStatus: state.isEdit,
+        editNote: state.editItem
     }
 }
 

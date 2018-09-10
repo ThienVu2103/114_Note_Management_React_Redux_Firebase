@@ -4,7 +4,9 @@ var redux = require('redux');
 
 const noteInitialState = {
     isEdit: false,
-    editItem: {}
+    editItem: {},
+    isAdd: false,
+    isAlert: false
 }
 const allReducer = (state = noteInitialState, action) => {
     switch (action.type) {
@@ -12,7 +14,9 @@ const allReducer = (state = noteInitialState, action) => {
             noteData.push(action.note);
             return state;
         case "CHANGE_EDIT_VIEW":
-            return { ...state, isEdit: !state.isEdit }
+            return { ...state, isEdit: !state.isEdit, editItem: {} }
+        case "CHANGE_ADD_VIEW":
+            return { ...state, isAdd: !state.isAdd }
         case "GET_EDIT_DATA":
             return { ...state, editItem: action.editObject }
         case "UPDATE_NOTE":
@@ -25,7 +29,10 @@ const allReducer = (state = noteInitialState, action) => {
         case "DEL_NOTE":
             noteData.child(action.id).remove();
             return state;
-
+        case "ALERT_ON":
+            return { ...state, isAlert: true };
+        case "ALERT_OFF":
+            return { ...state, isAlert: false };
         default:
             return state
     }

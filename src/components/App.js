@@ -5,9 +5,10 @@ import NoteList from './NoteList';
 import NoteForm from './NoteForm';
 import { noteData } from '../firebase/firebaseConnect'
 import { connect } from 'react-redux'
+import AlertInfo from './AlertInfo';
 class App extends Component {
   showForm = () => {
-    if(this.props.isEdit) {
+    if (this.props.isEdit) {
       return <NoteForm saveNote={(note) => this.saveNote(note)} />
     }
   }
@@ -19,6 +20,7 @@ class App extends Component {
     // console.log(noteData)
     return (
       <div className="App">
+        <AlertInfo />
         <Header />
         <div className="container">
           <div className="row">
